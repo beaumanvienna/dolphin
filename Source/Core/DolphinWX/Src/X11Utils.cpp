@@ -28,7 +28,7 @@ extern char **environ;
 #include <algorithm>
 #include "WxUtils.h"
 #endif
-
+int renderWindowXPos,renderWindowYPos;
 namespace X11Utils
 {
 
@@ -164,6 +164,7 @@ XRRConfiguration::~XRRConfiguration()
 
 void XRRConfiguration::Update()
 {
+
 	if(SConfig::GetInstance().m_LocalCoreStartupParameter.strFullscreenResolution == "Auto")
 		return;
 	
@@ -256,6 +257,15 @@ void XRRConfiguration::Update()
 	if (outputInfo && crtcInfo && fullMode)
 	{
 		INFO_LOG(VIDEO, "Fullscreen Resolution %dx%d", fullWidth, fullHeight);
+		
+//#define RETRORIG_PL1		
+		#ifdef RETRORIG_PL1
+		  printf("Retrorig: fullWidth: %d, fullHeight: %d, name: %s, offset x: %d, offset y: %d\n",fullWidth,fullHeight,outputInfo->name,crtcInfo->x,crtcInfo->y);
+		#endif
+		renderWindowXPos=crtcInfo->x;
+		renderWindowYPos=crtcInfo->y;
+		
+		
 	}
 	else
 	{

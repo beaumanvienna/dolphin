@@ -876,8 +876,17 @@ void CFrame::StartGame(const std::string& filename)
 	}
 	else
 	{
-		wxPoint position(SConfig::GetInstance().m_LocalCoreStartupParameter.iRenderWindowXPos,
-				SConfig::GetInstance().m_LocalCoreStartupParameter.iRenderWindowYPos);
+//#define RETRORIG_PL1
+	  #ifdef RETRORIG_PL1
+	  	printf("Retrorig: rendering *NOT* into main window\n");
+	  #endif
+	  extern int renderWindowXPos,renderWindowYPos;
+	  wxPoint position(renderWindowXPos,renderWindowYPos);
+	  
+	  /*wxPoint position(SConfig::GetInstance().m_LocalCoreStartupParameter.iRenderWindowXPos,
+				SConfig::GetInstance().m_LocalCoreStartupParameter.iRenderWindowYPos);*/
+	  
+
 #ifdef __APPLE__
 		// On OS X, the render window's title bar is not visible,
 		// and the window therefore not easily moved, when the
