@@ -235,6 +235,7 @@ void XRRConfiguration::ToggleDisplayMode(bool bFullscreen)
 	}
 	XUngrabServer(dpy);
 	XSync(dpy, false);
+	XRaiseWindow(dpy,win);
 }
 
 void XRRConfiguration::AddResolutions(std::vector<std::string>& resos)
