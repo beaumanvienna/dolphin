@@ -95,7 +95,8 @@ bool initJoy(void)
     if ( SDL_GameControllerAddMappingsFromFile(internal.c_str()) == -1 )
     {
     }
-    if( SDL_GameControllerAddMappingsFromFile("../../resources/gamecontrollerdb.txt") == -1 )
+    string db = gBaseDir + "gamecontrollerdb.txt";
+    if( SDL_GameControllerAddMappingsFromFile(db.c_str()) == -1 )
     {
         printf( "Warning: Unable to open gamecontrollerdb.txt\n");
     }
@@ -220,7 +221,7 @@ bool checkMapping(SDL_JoystickGUID guid, bool* mappingOK, string name)
     {
 
         //check public db
-        mappingOK[0] = findGuidInFile("../../resources/gamecontrollerdb.txt", guidStr,32,&line);
+        mappingOK[0] = findGuidInFile(gBaseDir + "gamecontrollerdb.txt", guidStr,32,&line);
         
         if (mappingOK[0])
         {
@@ -234,7 +235,7 @@ bool checkMapping(SDL_JoystickGUID guid, bool* mappingOK, string name)
             {
                 
                 //check in public db
-                mappingOK[0] = findGuidInFile("../../resources/gamecontrollerdb.txt",guidStr,i,&line);
+                mappingOK[0] = findGuidInFile(gBaseDir + "gamecontrollerdb.txt",guidStr,i,&line);
                 
                 if (mappingOK[0])
                 {
@@ -522,6 +523,7 @@ int main(int argc, char* argv[])
 
         dolphin_argv[1] = arg2;
         dolphin_argc = 2; 
+        printf("jc dolphin_main(dolphin_argc,dolphin_argv);\n");
         dolphin_main(dolphin_argc,dolphin_argv);
     }
     else if (argc == 3)
@@ -537,6 +539,7 @@ int main(int argc, char* argv[])
         dolphin_argc = 2; 
         
         dolphin_argv[1] = arg2;
+        printf("jc dolphin_main(dolphin_argc,dolphin_argv);\n");
         dolphin_main(dolphin_argc,dolphin_argv);
         
         dolphin_argv[1] = arg3;
@@ -548,6 +551,7 @@ int main(int argc, char* argv[])
     else
     {
         dolphin_argc = 1; 
+        printf("jc dolphin_main(dolphin_argc,dolphin_argv);\n");
         dolphin_main(dolphin_argc,dolphin_argv);
     }
 

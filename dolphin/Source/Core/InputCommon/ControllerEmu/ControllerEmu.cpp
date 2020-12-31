@@ -151,17 +151,22 @@ void EmulatedController::SaveConfig(IniFile::Section* sec, const std::string& ba
   }
 }
 
-void EmulatedController::LoadDefaults(const ControllerInterface& ciface)
+void EmulatedController::LoadDefaults(const ControllerInterface& ciface, int n)
 {
   // load an empty inifile section, clears everything
   IniFile::Section sec;
   LoadConfig(&sec);
 
+  // Marley
+  const std::string& default_device_string = "SDL/0/0xbaadf00dbeefbabe - " + std::to_string(n);
+  SetDefaultDevice(default_device_string);
+  /*
   const std::string& default_device_string = ciface.GetDefaultDeviceString();
   if (!default_device_string.empty())
   {
     SetDefaultDevice(default_device_string);
   }
+  */
 }
 
 void EmulatedController::GenerateTextures(IniFile::Section* sec)

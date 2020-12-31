@@ -1,4 +1,6 @@
-add_executable(dolphin-nogui
+#modified for Marley
+#add_executable(dolphin-nogui
+add_library(dolphin-nogui
   Platform.cpp
   Platform.h
   PlatformHeadless.cpp
@@ -25,11 +27,12 @@ PRIVATE
   uicommon
   cpp-optparse
 )
-
+target_include_directories(dolphin-nogui PRIVATE /usr/include/SDL2)
 if(USE_DISCORD_PRESENCE)
   target_compile_definitions(dolphin-nogui PRIVATE -DUSE_DISCORD_PRESENCE)
 endif()
 
 set(CPACK_PACKAGE_EXECUTABLES ${CPACK_PACKAGE_EXECUTABLES} dolphin-nogui)
-install(TARGETS dolphin-nogui RUNTIME DESTINATION ${bindir})
+#modified for Marley
+#install(TARGETS dolphin-nogui RUNTIME DESTINATION ${bindir})
 

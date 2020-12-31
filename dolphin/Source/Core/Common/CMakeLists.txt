@@ -130,6 +130,7 @@ add_library(common
   WindowSystemInfo.h
   WorkQueueThread.h
 )
+target_include_directories(common PRIVATE /usr/include/SDL2)
 
 target_link_libraries(common
 PUBLIC

@@ -96,9 +96,9 @@ std::string FreeLookController::GetName() const
   return std::string("FreeLook") + char('1' + m_index);
 }
 
-void FreeLookController::LoadDefaults(const ControllerInterface& ciface)
+void FreeLookController::LoadDefaults(const ControllerInterface& ciface, int n)
 {
-  EmulatedController::LoadDefaults(ciface);
+  EmulatedController::LoadDefaults(ciface,0);
 
   auto hotkey_string = [](std::vector<std::string> inputs) {
     return "@(" + JoinStrings(inputs, "+") + ')';

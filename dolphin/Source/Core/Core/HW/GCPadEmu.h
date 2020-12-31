@@ -44,7 +44,7 @@ public:
 
   ControllerEmu::ControlGroup* GetGroup(PadGroup group);
 
-  void LoadDefaults(const ControllerInterface& ciface) override;
+  void LoadDefaults(const ControllerInterface& ciface,int n) override;
 
   // Values averaged from multiple genuine GameCube controllers.
   static constexpr ControlState MAIN_STICK_GATE_RADIUS = 0.7937125;

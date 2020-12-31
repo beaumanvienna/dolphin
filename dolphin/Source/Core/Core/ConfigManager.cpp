@@ -492,7 +492,7 @@ void SConfig::LoadCoreSettings(IniFile& ini)
   }
   core->Get("WiiSDCard", &m_WiiSDCard, true);
   core->Get("WiiKeyboard", &m_WiiKeyboard, false);
-  core->Get("WiimoteContinuousScanning", &m_WiimoteContinuousScanning, false);
+  core->Get("WiimoteContinuousScanning", &m_WiimoteContinuousScanning, true);
   core->Get("WiimoteEnableSpeaker", &m_WiimoteEnableSpeaker, false);
   core->Get("WiimoteControllerInterface", &connect_wiimotes_for_ciface, false);
   core->Get("RunCompareServer", &bRunCompareServer, false);

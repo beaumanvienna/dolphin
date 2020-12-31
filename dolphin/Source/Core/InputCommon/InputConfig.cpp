@@ -141,7 +141,11 @@ bool InputConfig::LoadConfig(bool isGC)
   }
   else
   {
-    m_controllers[0]->LoadDefaults(g_controller_interface);
+
+    // Marley
+    m_controllers[0]->LoadDefaults(g_controller_interface,0);
+    if (m_ini_name == "GCPadNew") m_controllers[1]->LoadDefaults(g_controller_interface,1);
+    if (m_ini_name != "WiimoteNew") SaveConfig();
     m_controllers[0]->UpdateReferences(g_controller_interface);
     return false;
   }

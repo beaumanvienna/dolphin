@@ -79,7 +79,7 @@ const Info<bool> MAIN_WII_SD_CARD{{System::Main, "Core", "WiiSDCard"}, true};
 const Info<bool> MAIN_WII_SD_CARD_WRITABLE{{System::Main, "Core", "WiiSDCardWritable"}, true};
 const Info<bool> MAIN_WII_KEYBOARD{{System::Main, "Core", "WiiKeyboard"}, false};
 const Info<bool> MAIN_WIIMOTE_CONTINUOUS_SCANNING{
-    {System::Main, "Core", "WiimoteContinuousScanning"}, false};
+    {System::Main, "Core", "WiimoteContinuousScanning"}, true};
 const Info<bool> MAIN_WIIMOTE_ENABLE_SPEAKER{{System::Main, "Core", "WiimoteEnableSpeaker"}, false};
 const Info<bool> MAIN_RUN_COMPARE_SERVER{{System::Main, "Core", "RunCompareServer"}, false};
 const Info<bool> MAIN_RUN_COMPARE_CLIENT{{System::Main, "Core", "RunCompareClient"}, false};
@@ -117,7 +117,7 @@ const Info<bool> MAIN_ENABLE_SAVESTATES{{System::Main, "Core", "EnableSaveStates
 
 const Info<std::string> MAIN_FULLSCREEN_DISPLAY_RES{
     {System::Main, "Display", "FullscreenDisplayRes"}, "Auto"};
-const Info<bool> MAIN_FULLSCREEN{{System::Main, "Display", "Fullscreen"}, false};
+const Info<bool> MAIN_FULLSCREEN{{System::Main, "Display", "Fullscreen"}, true};
 const Info<bool> MAIN_RENDER_TO_MAIN{{System::Main, "Display", "RenderToMain"}, false};
 const Info<int> MAIN_RENDER_WINDOW_XPOS{{System::Main, "Display", "RenderWindowXPos"}, -1};
 const Info<int> MAIN_RENDER_WINDOW_YPOS{{System::Main, "Display", "RenderWindowYPos"}, -1};

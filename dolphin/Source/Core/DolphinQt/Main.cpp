@@ -290,7 +290,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
   }
 
   Core::Shutdown();
-  UICommon::Shutdown();
+  //UICommon::Shutdown();
   Host::GetInstance()->deleteLater();
 
   return retval;

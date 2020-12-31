@@ -392,9 +392,9 @@ int HotkeyManager::GetIndexForGroup(int group, int id) const
   return id - s_groups_info[group].first;
 }
 
-void HotkeyManager::LoadDefaults(const ControllerInterface& ciface)
+void HotkeyManager::LoadDefaults(const ControllerInterface& ciface,int n)
 {
-  EmulatedController::LoadDefaults(ciface);
+  EmulatedController::LoadDefaults(ciface,n);
 
   auto set_key_expression = [this](int index, const std::string& expression) {
     m_keys[FindGroupByID(index)]

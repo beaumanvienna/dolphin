@@ -42,7 +42,7 @@ public:
   explicit FreeLookController(unsigned int index);
 
   std::string GetName() const override;
-  void LoadDefaults(const ControllerInterface& ciface) override;
+  void LoadDefaults(const ControllerInterface& ciface, int n) override;
 
   ControllerEmu::ControlGroup* GetGroup(FreeLookGroup group) const;
   void Update();

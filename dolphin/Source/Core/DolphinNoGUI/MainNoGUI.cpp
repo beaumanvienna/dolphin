@@ -31,7 +31,7 @@
 
 #include "VideoCommon/RenderBase.h"
 #include "VideoCommon/VideoBackendBase.h"
-
+extern std::string gBaseDir;
 static std::unique_ptr<Platform> s_platform;
 
 static void signal_handler(int)
@@ -130,8 +130,8 @@ static std::unique_ptr<Platform> GetPlatform(const optparse::Values& options)
 
   return nullptr;
 }
-
-int main(int argc, char* argv[])
+// modified for Marley
+int dolphin_main(int argc, char* argv[])
 {
   auto parser = CommandLineParse::CreateParser(CommandLineParse::ParserOptions::OmitGUIOptions);
   parser->add_option("-p", "--platform")
@@ -196,11 +196,10 @@ int main(int argc, char* argv[])
     return 0;
   }
 
-  std::string user_directory;
-  if (options.is_set("user"))
-    user_directory = static_cast<const char*>(options.get("user"));
-
+  std::string user_directory = gBaseDir + "dolphin-emu";
+  
   UICommon::SetUserDirectory(user_directory);
+  UICommon::CreateDirectories();
   UICommon::Init();
 
   s_platform = GetPlatform(options);
@@ -251,7 +250,6 @@ int main(int argc, char* argv[])
 
   Core::Shutdown();
   s_platform.reset();
-  UICommon::Shutdown();
 
   return 0;
 }

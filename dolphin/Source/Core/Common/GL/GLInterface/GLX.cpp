@@ -7,6 +7,7 @@
 
 #include "Common/GL/GLInterface/GLX.h"
 #include "Common/Logging/Log.h"
+#include "../../../../../../include/gui.h"
 
 #define GLX_CONTEXT_MAJOR_VERSION_ARB 0x2091
 #define GLX_CONTEXT_MINOR_VERSION_ARB 0x2092
@@ -24,21 +25,22 @@ static PFNGLXCREATEGLXPBUFFERSGIXPROC glXCreateGLXPbufferSGIX = nullptr;
 static PFNGLXDESTROYGLXPBUFFERSGIXPROC glXDestroyGLXPbufferSGIX = nullptr;
 
 static bool s_glxError;
-static int ctxErrorHandler(Display* dpy, XErrorEvent* ev)
-{
-  s_glxError = true;
-  return 0;
-}
+//Marley static int ctxErrorHandler(Display* dpy, XErrorEvent* ev)
+//Marley {
+//Marley   s_glxError = true;
+//Marley   return 0;
+//Marley }
 
 GLContextGLX::~GLContextGLX()
 {
   DestroyWindowSurface();
   if (m_context)
   {
-    if (glXGetCurrentContext() == m_context)
-      glXMakeCurrent(m_display, None, nullptr);
-
-    glXDestroyContext(m_display, m_context);
+    SDL_GL_DeleteContext(m_context);
+//Marley    if (glXGetCurrentContext() == m_context)
+//Marley      glXMakeCurrent(m_display, None, nullptr);
+//Marley
+//Marley    glXDestroyContext(m_display, m_context);
   }
 }
 
@@ -49,23 +51,21 @@ bool GLContextGLX::IsHeadless() const
 
 void GLContextGLX::SwapInterval(int Interval)
 {
+    #define immediate_updates 0
+    #define updates_synchronized 1
+    SDL_GL_SetSwapInterval(updates_synchronized);
+    /*
   if (!m_drawable)
     return;
 
   // Try EXT_swap_control, then MESA_swap_control.
   if (glXSwapIntervalEXTPtr)
-  {
     glXSwapIntervalEXTPtr(m_display, m_drawable, Interval);
-  }
   else if (glXSwapIntervalMESAPtr)
-  {
     glXSwapIntervalMESAPtr(static_cast<unsigned int>(Interval));
-  }
   else
-  {
-    ERROR_LOG_FMT(VIDEO,
-                  "No support for SwapInterval (framerate clamped to monitor refresh rate).");
-  }
+    ERROR_LOG(VIDEO, "No support for SwapInterval (framerate clamped to monitor refresh rate).");
+    */
 }
 
 void* GLContextGLX::GetFuncAddress(const std::string& name)
@@ -75,15 +75,17 @@ void* GLContextGLX::GetFuncAddress(const std::string& name)
 
 void GLContextGLX::Swap()
 {
-  glXSwapBuffers(m_display, m_drawable);
+  //glXSwapBuffers(m_display, m_drawable);
+  SDL_GL_SwapWindow(gWindow);
 }
 
 // Create rendering window.
 // Call browser: Core.cpp:EmuThread() > main.cpp:Video_Initialize()
 bool GLContextGLX::Initialize(const WindowSystemInfo& wsi, bool stereo, bool core)
 {
+  #warning "Marley: modified"
   m_display = static_cast<Display*>(wsi.display_connection);
-  int screen = DefaultScreen(m_display);
+  int screen = SDL_GetWindowDisplayIndex(gWindow);
 
   // checking glx version
   int glxMajorVersion, glxMinorVersion;
@@ -104,7 +106,8 @@ bool GLContextGLX::Initialize(const WindowSystemInfo& wsi, bool stereo, bool cor
                   "glXCreateContextAttribsARB not found, do you support GLX_ARB_create_context?");
     return false;
   }
-
+  
+  /*
   // choosing framebuffer
   int visual_attribs[] = {GLX_X_RENDERABLE,
                           True,
@@ -127,7 +130,8 @@ bool GLContextGLX::Initialize(const WindowSystemInfo& wsi, bool stereo, bool cor
                           GLX_STEREO,
                           stereo ? True : False,
                           None};
-  int fbcount = 0;
+  
+  //Marley int fbcount = 0;
   GLXFBConfig* fbc = glXChooseFBConfig(m_display, screen, visual_attribs, &fbcount);
   if (!fbc || !fbcount)
   {
@@ -139,10 +143,13 @@ bool GLContextGLX::Initialize(const WindowSystemInfo& wsi, bool stereo, bool cor
 
   s_glxError = false;
   XErrorHandler oldHandler = XSetErrorHandler(&ctxErrorHandler);
-
+  */
+  
   // Create a GLX context.
   if (core)
   {
+      m_context = SDL_GL_CreateContext(gWindow);
+      /*
     for (const auto& version : s_desktop_opengl_versions)
     {
       std::array<int, 9> context_attribs = {
@@ -161,9 +168,10 @@ bool GLContextGLX::Initialize(const WindowSystemInfo& wsi, bool stereo, bool cor
                    version.second);
       m_attribs.insert(m_attribs.end(), context_attribs.begin(), context_attribs.end());
       break;
-    }
+    }*/
   }
-
+  
+  /*
   // Failed to create any core contexts, try for anything.
   if (!m_context || s_glxError)
   {
@@ -177,10 +185,11 @@ bool GLContextGLX::Initialize(const WindowSystemInfo& wsi, bool stereo, bool cor
   }
   if (!m_context || s_glxError)
   {
-    ERROR_LOG_FMT(VIDEO, "Unable to create GL context.");
-    XSetErrorHandler(oldHandler);
+    ERROR_LOG(VIDEO, "Unable to create GL context.");
+   //Marley XSetErrorHandler(oldHandler);
     return false;
   }
+  */
 
   glXSwapIntervalEXTPtr = nullptr;
   glXSwapIntervalMESAPtr = nullptr;
@@ -215,11 +224,11 @@ bool GLContextGLX::Initialize(const WindowSystemInfo& wsi, bool stereo, bool cor
   if (!CreateWindowSurface(reinterpret_cast<Window>(wsi.render_surface)))
   {
     ERROR_LOG_FMT(VIDEO, "Error: CreateWindowSurface failed\n");
-    XSetErrorHandler(oldHandler);
+    //Marley XSetErrorHandler(oldHandler);
     return false;
   }
 
-  XSetErrorHandler(oldHandler);
+  //Marley XSetErrorHandler(oldHandler);
   m_opengl_mode = Mode::OpenGL;
   return MakeCurrent();
 }
@@ -227,21 +236,21 @@ bool GLContextGLX::Initialize(const WindowSystemInfo& wsi, bool stereo, bool cor
 std::unique_ptr<GLContext> GLContextGLX::CreateSharedContext()
 {
   s_glxError = false;
-  XErrorHandler oldHandler = XSetErrorHandler(&ctxErrorHandler);
+  //Marley XErrorHandler oldHandler = XSetErrorHandler(&ctxErrorHandler);
 
-  GLXContext new_glx_context =
-      glXCreateContextAttribs(m_display, m_fbconfig, m_context, True, &m_attribs[0]);
-  XSync(m_display, False);
+  //Marley GLXContext new_glx_context =
+  //Marley     glXCreateContextAttribs(m_display, m_fbconfig, m_context, True, &m_attribs[0]);
+  //Marley XSync(m_display, False);
 
-  if (!new_glx_context || s_glxError)
+  /*if (!new_glx_context || s_glxError)
   {
     ERROR_LOG_FMT(VIDEO, "Unable to create GL context.");
     XSetErrorHandler(oldHandler);
     return nullptr;
-  }
+  }*/
 
   std::unique_ptr<GLContextGLX> new_context = std::make_unique<GLContextGLX>();
-  new_context->m_context = new_glx_context;
+  new_context->m_context = m_context;
   new_context->m_opengl_mode = m_opengl_mode;
   new_context->m_supports_pbuffer = m_supports_pbuffer;
   new_context->m_display = m_display;
@@ -251,16 +260,18 @@ std::unique_ptr<GLContext> GLContextGLX::CreateSharedContext()
   if (m_supports_pbuffer && !new_context->CreateWindowSurface(None))
   {
     ERROR_LOG_FMT(VIDEO, "Error: CreateWindowSurface failed");
-    XSetErrorHandler(oldHandler);
+    //Marley XSetErrorHandler(oldHandler);
     return nullptr;
   }
 
-  XSetErrorHandler(oldHandler);
+  //Marley XSetErrorHandler(oldHandler);
   return new_context;
 }
 
 bool GLContextGLX::CreateWindowSurface(Window window_handle)
 {
+    //Marley 
+    /*
   if (window_handle)
   {
     // Get an appropriate visual
@@ -281,29 +292,40 @@ bool GLContextGLX::CreateWindowSurface(Window window_handle)
       return false;
 
     m_drawable = static_cast<GLXDrawable>(m_pbuffer);
-  }
+  }*/
+  int w,h;
+  SDL_GetWindowSize(gWindow,&w,&h);
+  m_backbuffer_width = w;
+  m_backbuffer_height = h;
+  
+  XVisualInfo* vi = NULL;
+  m_render_window = GLX11Window::Create(m_display, window_handle, vi);
 
   return true;
 }
 
 void GLContextGLX::DestroyWindowSurface()
 {
-  m_render_window.reset();
+  //Marley m_render_window.reset();
   if (m_supports_pbuffer && m_pbuffer)
   {
-    glXDestroyGLXPbufferSGIX(m_display, m_pbuffer);
+    //Marley glXDestroyGLXPbufferSGIX(m_display, m_pbuffer);
     m_pbuffer = 0;
   }
 }
 
 bool GLContextGLX::MakeCurrent()
 {
-  return glXMakeCurrent(m_display, m_drawable, m_context);
+  bool ok = ((SDL_GL_MakeCurrent(gWindow, m_context) == 0));
+
+  //jcreturn glXMakeCurrent(m_display, m_drawable, m_context);
+  return ok;
 }
 
 bool GLContextGLX::ClearCurrent()
 {
-  return glXMakeCurrent(m_display, None, nullptr);
+  //Marley return glXMakeCurrent(m_display, None, nullptr);
+  return true;
 }
 
 void GLContextGLX::Update()

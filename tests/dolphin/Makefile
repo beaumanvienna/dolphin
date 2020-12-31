@@ -5,9 +5,9 @@ DEBUG=$(shell ls ../.debug_build 2>/dev/null)
 
 
 ifeq ($(DEBUG), ../.debug_build)
-COMPILER_ARTIFACTS = --std=c++17 -g3 -O0 -ggdb -I/usr/include/SDL2 -I../../dolphin/Source/Core
+COMPILER_ARTIFACTS = --std=c++17 -g3 -O0 -ggdb -I/usr/include/SDL2 -I../../dolphin/Source/Core -I../../dolphin/Externals/fmt/include
 else
-COMPILER_ARTIFACTS = --std=c++17 -I/usr/include/SDL2 -I../../dolphin/Source/Core
+COMPILER_ARTIFACTS = --std=c++17 -I/usr/include/SDL2 -I../../dolphin/Source/Core -I../../dolphin/Externals/fmt/include
 endif
 
 
