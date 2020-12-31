@@ -1,5 +1,5 @@
 [submodule "Externals/Qt"]
-	path = Externals/Qt
+	path = dolphin/Externals/Qt
 	url = https://github.com/dolphin-emu/ext-win-qt.git
 	branch = master
 	shallow = true
